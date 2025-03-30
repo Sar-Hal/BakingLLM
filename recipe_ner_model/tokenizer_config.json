@@ -46,11 +46,12 @@
   "do_lower_case": true,
   "extra_special_tokens": {},
   "mask_token": "[MASK]",
-  "model_max_length": 512,
+  "model_max_length": 128,
   "pad_token": "[PAD]",
   "sep_token": "[SEP]",
   "strip_accents": null,
   "tokenize_chinese_chars": true,
   "tokenizer_class": "DistilBertTokenizer",
-  "unk_token": "[UNK]"
+  "unk_token": "[UNK]",
+  "never_split": ["tbsp", "tsp", "cups"]
 }
