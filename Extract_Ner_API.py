@@ -82,26 +82,52 @@ def extract_ingredients(text):
 
 def convert_with_gemini(ingredients):
     prompt = f"""
-    Convert these baking ingredients to exact grams or milliletres. Return ONLY JSON:
-
-    Rules:
-    - Use professional baking standards.
-    - For dry ingredients (flour, sugar), specify if packed/loose.
-    - Return format:
+    Convert these baking ingredients to PRECISE grams or milliliters. 
+    Return ONLY this JSON format (no other text/comments):
     {{
-      "ingredient": string,
-      "grams": number, (if dry)
-      "ml": number, (if wet)
+      "results": [
+        {{
+          "ingredient": string,
+          "grams": number (for dry ingredients),
+          "ml": number (for liquids)
+        }}
+      ]
     }}
 
-    Input to convert:
+    RULES:
+    1. Use EXACTLY the ingredient names provided
+    2. Only include "grams" OR "ml" per ingredient (never both)
+    3. Skip all optional fields like "notes", "state", etc.
+    4. Use standard conversions:
+       - 1 cup flour = 125g
+       - 1 cup water = 240ml
+       - 1 tbsp butter = 14g
+
+    Ingredients to convert:
     {json.dumps(ingredients, indent=2)}
     """
     
     try:
         response = gemini.generate_content(prompt)
-        clean_response = response.text.replace('```json', '').replace('```', '').strip()
-        return json.loads(clean_response)
+        # Extract JSON even if wrapped in markdown
+        json_str = re.search(r'\{.*\}', response.text, re.DOTALL).group()
+        result = json.loads(json_str)
+        
+        # Post-processing cleanup
+        for item in result["results"]:
+            # Remove null/empty fields
+            item.pop("notes", None)
+            item.pop("state", None)
+            
+            # Ensure only grams OR ml exists
+            if "ml" in item and "grams" in item:
+                if "flour" in item["ingredient"]:
+                    del item["ml"]
+                else:
+                    del item["grams"]
+                
+        return result["results"]
+        
     except Exception as e:
         print(f"Gemini Error: {str(e)}")
         return None
