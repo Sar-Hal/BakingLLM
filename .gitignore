@@ -1,5 +1,5 @@
 .env
 model.safetensors
 optimizer.pt
-DevErrors\
-recipe_ner_model\
+folder_to_ignore/DevErrors
+folder_to_ignore/recipe_ner_model
