@@ -1,3 +1,5 @@
 .env
 model.safetensors
 optimizer.pt
+recipe_ner_model
+DevErrors
