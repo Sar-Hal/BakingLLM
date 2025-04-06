@@ -5,3 +5,5 @@ Online recipe platforms often list ingredients in vague measurements like "cups"
 
 Objective:
 Participants are tasked with developing AI-powered tools that convert recipe measurements into precise grams. Solutions should include a database of ingredient densities, real-time conversion algorithms, and user-friendly interfaces, ensuring accurate and consistent results for all bakers.
+
+The backend is running on kaggle 
